@@ -1,0 +1,12 @@
+{
+    "require": {
+        "miladrahimi/phprouter": "5.*"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "API\\": "api/",
+            "Core\\": "core/"
+        }
+    }
+}
