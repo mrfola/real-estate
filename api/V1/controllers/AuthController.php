@@ -13,19 +13,20 @@ use Firebase\JWT\JWT;
 
 class AuthController
 {
-    private $db, $con;
+    private $db, $con, $key;
 
     public function __construct()
     {
         $this->db = new DB();
         $this->con = $this->db->connect("real-estate", "root", "");
+        $this->key = "ITuCY0SgavWs5MIqf5642Fk0hnW8JkoKifNM8XclZtLXKqPlWkfRgOBGaQm3mJyT3m8lOfkqu0wR29tq4Yt1uH7xgP9Ru7JUu4zn";
+
     }
 
     public function getToken()
     {
         $iat = time();
-        $exp = $iat + 60*60;
-        $key = "ITuCY0SgavWs5MIqf5642Fk0hnW8JkoKifNM8XclZtLXKqPlWkfRgOBGaQm3mJyT3m8lOfkqu0wR29tq4Yt1uH7xgP9Ru7JUu4zn";
+        $exp = $iat + (60*60);
 
         $payload = array(
             "iss" => "127.0.0.1:8000", //issuer
@@ -34,9 +35,40 @@ class AuthController
             "nbf" => $exp //token expiry time.
         );
 
-        $jwt = JWT::encode($payload, $key, 'HS256');
+        JWT::$leeway = 60;
+
+        
+        $jwt = JWT::encode($payload, $this->key, 'HS256');
 
         return new JsonResponse(["token" => $jwt, "expires" => $exp]);
+    }
+
+
+    public function validateToken($request)
+    {
+       
+
+        if(in_array('Authorization', $request->getHeaders()))
+        {
+            $bearerToken = $request->getHeaders()['authorization'][0];
+        }else
+        {
+            return false;
+        }
+
+        $token = str_replace('Bearer ', '', $bearerToken);
+
+        JWT::$leeway = 60 * 60 * 24;
+        try 
+        {
+            $decoded = JWT::decode($token, $this->key, array('HS256'));
+            return $decoded;
+
+        }catch (Exception $err)
+        {
+            return false;
+        }
+       
     }
 
     public function login(ServerRequest $request)
@@ -84,7 +116,7 @@ class AuthController
             {
                 //error message
                 $error = "Wrong username or password";
-                return new JsonResponse(["errors" => $error], 504);
+                return new JsonResponse(["errors" => $error], 400);
 
             }
 

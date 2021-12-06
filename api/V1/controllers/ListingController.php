@@ -5,26 +5,39 @@ use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\ServerRequest;
 use Core\DB;
 use PDO;
+use Firebase\JWT\Key;
+use Firebase\JWT\JWT;
+
+
 
 class ListingController
 { 
     
-    private $con, $db;
+    private $con, $db, $key, $auth;
 
     public function __construct()
     {
         $this->db = new DB();
         $this->con = $this->db->connect("real-estate", "root", "");
+        $this->auth = new AuthController();
     }
 
-    public function index()
+    public function index(ServerRequest $request)
     {
-        //IMPROVEMENTS: 
-        //Make response HATEOS compliant
-        $statement = $this->con->prepare("SELECT * FROM `listings`");
-        $statement->execute();
+        if($this->auth->validateToken($request))
+        {
+              //IMPROVEMENTS: 
+            //Make response HATEOS compliant
+            $statement = $this->con->prepare("SELECT * FROM `listings`");
+            $statement->execute();
 
-        return new JsonResponse($statement->fetchAll(PDO::FETCH_ASSOC), 200);
+            return new JsonResponse($statement->fetchAll(PDO::FETCH_ASSOC), 200);
+        }else
+        {
+            return new JsonResponse(["errors" => "Couldn't verify your token"], 400);
+        }
+
+      
     }
 
     public function show($id)
