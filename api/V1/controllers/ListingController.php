@@ -40,21 +40,20 @@ class ListingController
     {
         //IMPROVEMENTS:
         //Request should be validated before inserting (compulsory fields should be enforced)
-
-        //$queryParameters = $request->getQueryParams();
+        //Add $allowedFields variable for validation
 
         //get request content
-        $body = $request->getParsedBody();
+        $data = $request->getParsedBody();
         try 
         {
             $statement = $this->con->prepare("INSERT INTO `listings` (`name`, `description`, `pictures`, `details`, `location`) 
             VALUES (:name, :description, :pictures, :details, :location)"); 
 
-            $statement->bindParam(":name", $body['name']);
-            $statement->bindParam(":description", $body['description']);
-            $statement->bindParam(":pictures", $body['pictures']);
-            $statement->bindParam(":details", $body['details']);
-            $statement->bindParam(":location", $body['location']);
+            $statement->bindParam(":name", $data['name']);
+            $statement->bindParam(":description", $data['description']);
+            $statement->bindParam(":pictures", $data['pictures']);
+            $statement->bindParam(":details", $data['details']);
+            $statement->bindParam(":location", $data['location']);
 
             $statement->execute();
 
@@ -75,13 +74,14 @@ class ListingController
         //Add user id to `listing` table
         //reject empty request
 
-        $body =  $request->getQueryParams();
+        $data =  $request->getQueryParams();
+        $allowedFields = [ "name", "description", "pictures", "details","California","is_available"];
 
         //get query parameter
-        $queryParams = $this->db->getQueryParams($body, $allowedFields = [ "name", "description", "pictures", "details","California","is_available"]);
+        $queryParams = $this->db->getQueryParams($data, $allowedFields);
 
         $statement = $this->con->prepare("UPDATE `listings` SET $queryParams WHERE id=:id");
-        $this->db->bindAllParams($statement, $body);
+        $this->db->bindAllParams($statement, $data, $allowedFields);
         $statement->bindParam(":id", $id);
 
         $statement->execute();
@@ -89,9 +89,16 @@ class ListingController
         return $this->show($id);
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        return json_encode(["data" => "Listing deleted"]);
+         //IMPROVEMENTS: 
+        //You should only be able to delete your own listing
+
+        $statement = $this->con->prepare("DELETE FROM `listings` WHERE id=:id");
+        $statement->bindParam(":id", $id);
+        $statement->execute();
+
+        return new JsonResponse(["id" => $id, "message" => "Your post has been deleted"], 200);
     }
 
 

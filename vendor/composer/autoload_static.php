@@ -26,6 +26,10 @@ class ComposerStaticInita80f8b1114ae719fdabbb66f5abe9b85
     );
 
     public static $prefixLengthsPsr4 = array (
+        'V' => 
+        array (
+            'Valitron\\' => 9,
+        ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
@@ -41,6 +45,14 @@ class ComposerStaticInita80f8b1114ae719fdabbb66f5abe9b85
         array (
             'Laminas\\Diactoros\\' => 18,
         ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
+        'C' => 
+        array (
+            'Core\\' => 5,
+        ),
         'A' => 
         array (
             'API\\' => 4,
@@ -48,6 +60,10 @@ class ComposerStaticInita80f8b1114ae719fdabbb66f5abe9b85
     );
 
     public static $prefixDirsPsr4 = array (
+        'Valitron\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
@@ -72,6 +88,14 @@ class ComposerStaticInita80f8b1114ae719fdabbb66f5abe9b85
         'Laminas\\Diactoros\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-diactoros/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Core\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/core',
         ),
         'API\\' => 
         array (

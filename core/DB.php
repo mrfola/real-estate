@@ -23,23 +23,30 @@ class DB
     
     }   
 
-    public function bindAllParams($statement, $request)
+    public function bindAllParams($statement, $data, $allowedFields)
     {
         //bind params
-        foreach ($request as $bodyParam => $value)
+        foreach ($data as $bodyParam => $value)
         {
-            $bodyValue = $value;
-            $statement->bindValue(":{$bodyParam}", $bodyValue);
+            if(in_array($bodyParam, $allowedFields))
+            {
+                $statement->bindValue(":{$bodyParam}", $value);
+            }else
+            {
+                //IMPROVEMENTS: 
+                //Make this send out a JSON response with response code of bad request
+                exit("Not allowed");
+            }
         }
 
         return $statement;
     }
 
-    public function getQueryParams($body, $allowedFields)
+    public function getQueryParams($data, $allowedFields)
     {
         $queryParams = [];
 
-        foreach($body as $bodyParam => $value)
+        foreach($data as $bodyParam => $value)
         {
             if(in_array($bodyParam, $allowedFields))
             {

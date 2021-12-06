@@ -1,6 +1,8 @@
 {
     "require": {
-        "miladrahimi/phprouter": "5.*"
+        "miladrahimi/phprouter": "5.*",
+        "vlucas/valitron": "^1.4",
+        "firebase/php-jwt": "^5.5"
     },
 
     "autoload": {
