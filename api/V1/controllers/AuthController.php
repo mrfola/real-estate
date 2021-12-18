@@ -8,7 +8,7 @@ use Core\DB;
 use PDO;
 use Valitron\Validator;
 use Exception;
-use Firebase\JWT\JWT;
+use Firebase\JWT\JWT; //JsonWebToken package by Firbase
 
 
 class AuthController
@@ -44,11 +44,11 @@ class AuthController
     }
 
 
-    public function validateToken($request)
+    public function validateRequest($request)
     {
        
 
-        if(in_array('Authorization', $request->getHeaders()))
+        if($request->getHeader('Authorization'))
         {
             $bearerToken = $request->getHeaders()['authorization'][0];
         }else
@@ -119,20 +119,25 @@ class AuthController
                 return new JsonResponse(["errors" => $error], 400);
 
             }
-
-
-            // 
-
-            // $statement = $this->con->prepare("SELECT COUNT(*) FROM `users` WHERE email=:email, password=:password");
-            // $statement = $this->db->bindAllParams($statement, $data, $allowedFields);
         }else
         {
             return new JsonResponse(["errors" => $validator->errors()], 504);
         }
     }
 
-    public function logout()
+    public function logout(ServerRequest $request)
     {
-        
+        if ($this->validateToken($request))
+        {
+            return new JsonResponse([
+                "message" => "Logout Successful"
+            ], 200);
+        }else
+        {
+            return new JsonResponse([
+                "error" => "There was a problem with your request"
+            ], 400);
+        }
+
     }
 }
