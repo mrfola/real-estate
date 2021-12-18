@@ -13,13 +13,12 @@ use Firebase\JWT\JWT; //JsonWebToken package by Firebase
 
 class AuthController
 {
-    private $db, $con, $key;
+    private $con, $key;
     static $user;
 
     public function __construct()
     {
-        $this->db = new DB();
-        $this->con = $this->db->connect("real-estate", "root", "");
+        $this->con = DB::getConnection();
         $this->key = "ITuCY0SgavWs5MIqf5642Fk0hnW8JkoKifNM8XclZtLXKqPlWkfRgOBGaQm3mJyT3m8lOfkqu0wR29tq4Yt1uH7xgP9Ru7JUu4zn";
 
     }

@@ -6,15 +6,17 @@ use Laminas\Diactoros\Response\JsonResponse;
 
 class DB
 {
+    static $con;
     //in later modifications, call the variables from .env file
-    public function connect($dbname, $user, $password)
+    public static function setConnection($host, $dbname, $user, $password)
     {
-        $dsn = "mysql:host=localhost;"."dbname={$dbname}";
+        $dsn = "mysql:host={$host};"."dbname={$dbname}";
 
         try 
         {
         $con =  new PDO ($dsn, $user, $password);
-        return $con;
+        self::$con = $con;
+        return self::$con;
 
         } catch(PDOException $exception)
         {
@@ -23,7 +25,12 @@ class DB
     
     }   
 
-    public function bindAllParams($statement, $data, $allowedFields)
+    public static function getConnection()
+    {
+        return self::$con;
+    }
+
+    public static function bindAllParams($statement, $data, $allowedFields)
     {
         //bind params
         foreach ($data as $bodyParam => $value)
@@ -42,7 +49,7 @@ class DB
         return $statement;
     }
 
-    public function getQueryParams($data, $allowedFields)
+    public static function getQueryParams($data, $allowedFields)
     {
         $queryParams = [];
 
@@ -62,6 +69,22 @@ class DB
 
         $queryParams = implode(",", $queryParams);
         return $queryParams;
+    }
+
+    public static function isUnique($field, $table, $fieldValue)
+    {
+        $statement = self::$con->prepare("SELECT COUNT(*) FROM `{$table}` WHERE {$field}=:{$field} ");        
+        $statement->bindValue(":{$field}", $fieldValue);
+        $statement->execute();
+        $field_count = $statement->fetchColumn();
+
+        if($field_count <= 0)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
     }
 
 }
