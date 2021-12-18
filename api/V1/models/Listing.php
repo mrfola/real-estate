@@ -8,7 +8,7 @@ use API\V1\Controllers\AuthController;
 
 Class Listing
 {
-   protected $allowedFields = ["user_id", "name", "description", "pictures", "details", "location"];
+   protected $allowedFields = ["user_id", "name", "description", "currency", "price", "images", "details", "location"];
 
     public function getAllListings()
     {
@@ -16,7 +16,6 @@ Class Listing
         //Make response HATEOS compliant
         $statement = DB::$con->prepare("SELECT * FROM `listings`");
         $statement->execute();
-
         return new JsonResponse($statement->fetchAll(PDO::FETCH_ASSOC), 200);
     }
 
@@ -39,8 +38,8 @@ Class Listing
 
         try 
         {
-            $statement = DB::$con->prepare("INSERT INTO `listings` (`user_id`, `name`, `description`, `pictures`, `details`, `location`) 
-            VALUES (:user_id, :name, :description, :pictures, :details, :location)"); 
+            $statement = DB::$con->prepare("INSERT INTO `listings` (`user_id`, `name`, `description`, `images`, `details`, `location`) 
+            VALUES (:user_id, :name, :description, :images, :details, :location)"); 
 
             DB::bindAllParams($statement, $data, $this->allowedFields);
 

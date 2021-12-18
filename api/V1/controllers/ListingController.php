@@ -7,7 +7,7 @@ use Firebase\JWT\JWT;
 use Valitron\Validator;
 use API\V1\Controllers\AuthController;
 use API\V1\Models\Listing;
-
+use Cloudinary\Api\Upload\UploadApi;
 
 class ListingController
 { 
@@ -27,14 +27,25 @@ class ListingController
     public function create(ServerRequest $request)
     {
         $data = $request->getParsedBody();         //get request content
-        $data["user_id"] = AuthController::get_user();
+        $data["user_id"] = AuthController::getUserId();
 
         //validate
         $validator = new Validator($data);
-        $validator->rule('required',  ["user_id", "name", "description", "pictures", "details", "location"]);
-
+        $validator->rule('required',  ["user_id", "name", "description", "images", "details", "location"]);
+        
         if($validator->validate())
         {
+            //save images to cloudinary
+            $images = explode(",", $data["images"]);  //convert images string to array
+            $uploaded_images = [];
+            foreach ($images as $image_url)
+            {
+                $uploaded_image = (new UploadApi())->upload("{$image_url}");
+                $uploaded_images[] = $uploaded_image["url"];
+            }
+
+            $data["images"] = implode(",", $uploaded_images); //convert images array back to string
+ 
             $listing = new Listing();
             return $listing->createListing($data);
 

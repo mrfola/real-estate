@@ -2,7 +2,9 @@
     "require": {
         "miladrahimi/phprouter": "5.*",
         "vlucas/valitron": "^1.4",
-        "firebase/php-jwt": "^5.5"
+        "firebase/php-jwt": "^5.5",
+        "vlucas/phpdotenv": "^5.4",
+        "cloudinary/cloudinary_php": "^2"
     },
 
     "autoload": {
