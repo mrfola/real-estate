@@ -31,7 +31,6 @@ class UserController
     public function create(ServerRequest $request)
     {
         //IMPROVEMENTS: 
-        //Validate all fields, make compulsory fields compulsory
         //add salt to database field
 
         //get array data from request
@@ -48,7 +47,7 @@ class UserController
             return new JsonResponse(["error" => ['email' => 'Your email has already been used']]);
         }
 
-
+        //Validate
         $validate = new Validator($data);
         $validate->rule('required', ['name', 'email', 'password']);
         $validate->rule('email', 'email');

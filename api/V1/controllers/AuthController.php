@@ -8,12 +8,13 @@ use Core\DB;
 use PDO;
 use Valitron\Validator;
 use Exception;
-use Firebase\JWT\JWT; //JsonWebToken package by Firbase
+use Firebase\JWT\JWT; //JsonWebToken package by Firebase
 
 
 class AuthController
 {
     private $db, $con, $key;
+    static $user;
 
     public function __construct()
     {
@@ -23,16 +24,17 @@ class AuthController
 
     }
 
-    public function getToken()
+    public function getToken(array $data)
     {
         $iat = time();
         $exp = $iat + (60*60);
 
         $payload = array(
-            "iss" => "127.0.0.1:8000", //issuer
+            "iss" => "localhost:8000", //issuer
             "aud" => "http://postman.com", //audience
             "iat" => $iat, //token issuance time
-            "nbf" => $exp //token expiry time.
+            "nbf" => $exp, //token expiry time.
+            "data" => $data
         );
 
         JWT::$leeway = 60;
@@ -46,7 +48,6 @@ class AuthController
 
     public function validateRequest($request)
     {
-       
 
         if($request->getHeader('Authorization'))
         {
@@ -71,6 +72,16 @@ class AuthController
        
     }
 
+    public function set_user($user)
+    {
+        self::$user= $user;
+    }
+
+    public static function get_user()
+    {
+        return self::$user;
+    }
+
     public function login(ServerRequest $request)
     {
         $data = $request->getParsedBody();
@@ -86,14 +97,14 @@ class AuthController
             $is_login = true;
 
             //get hash for login email from
-            $statement = $this->con->prepare("SELECT `password` FROM `users` WHERE email=:email");
+            $statement = $this->con->prepare("SELECT `password`,`id` FROM `users` WHERE email=:email");
             $statement->bindValue(":email", $data['email']);
             $statement->execute();
-            $hash = $statement->fetch(PDO::FETCH_ASSOC);
+            $user_data = $statement->fetch(PDO::FETCH_ASSOC);
 
-            if($hash)
+            if($user_data)
             {
-                if(password_verify($data['password'], $hash["password"]))
+                if(password_verify($data['password'], $user_data["password"]))
                 {
                     $is_login = true;
 
@@ -110,7 +121,7 @@ class AuthController
             if($is_login == true)
             {
                 //generate token
-                return $this->getToken();
+                return $this->getToken(["id" => $user_data["id"]]);
 
             }else
             {
@@ -127,7 +138,7 @@ class AuthController
 
     public function logout(ServerRequest $request)
     {
-        if ($this->validateToken($request))
+        if ($this->validateRequest($request))
         {
             return new JsonResponse([
                 "message" => "Logout Successful"
