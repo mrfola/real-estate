@@ -6,7 +6,7 @@ use Laminas\Diactoros\Response\JsonResponse;
 
 class User
 {
-    protected $allowedFields = ["name", "email", "password"];
+    protected $allowedFields = ["name", "email", "password", "phonenumber"];
 
     public function createUser($data)
     {
@@ -23,7 +23,7 @@ class User
 
         $queryParams = DB::getQueryParams($data, $this->allowedFields);
 
-        $statement = DB::$con->prepare("INSERT INTO `users` (`name`, `email`, `password`) VALUES (:name, :email, :password)");
+        $statement = DB::$con->prepare("INSERT INTO `users` (`name`, `email`, `password` , `phonenumber`) VALUES (:name, :email, :password, :phonenumber)");
         DB::bindAllParams($statement, $data, $this->allowedFields);
         $statement->execute();
 
