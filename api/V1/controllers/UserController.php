@@ -3,8 +3,6 @@ namespace API\V1\Controllers;
 
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Response\JsonResponse;
-use Core\DB;
-use PDO;
 use Valitron\Validator;
 use Exception;
 use API\V1\Models\User;

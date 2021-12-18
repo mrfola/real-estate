@@ -19,7 +19,7 @@ class AuthMiddleware
         if ($this->auth->validateRequest($request))
         {     
             $user_id = $this->auth->validateRequest($request)->data->id;
-            $this->auth->set_user($user_id); //storing auth user id in authController so the value can be used to validate requests in other controllers      
+            $this->auth->setUserId($user_id); //storing auth user id in authController so the value can be used to validate requests in other controllers      
             // Call the next middleware/controller
             return $next($request);
         }

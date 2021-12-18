@@ -71,12 +71,12 @@ class AuthController
        
     }
 
-    public function set_user($user)
+    public function setUserId($user)
     {
         self::$user= $user;
     }
 
-    public static function get_user()
+    public static function getUserId()
     {
         return self::$user;
     }

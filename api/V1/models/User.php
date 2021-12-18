@@ -1,5 +1,4 @@
 <?php
-
 namespace API\V1\Models;
 use Core\DB;
 use PDO;
@@ -14,8 +13,8 @@ class User
         //IMPROVEMENTS: add salt to password
 
         //check if email is unique
-        $unique_email = DB::isUnique('email', 'users', $data['email']);
-        if(!$unique_email)
+        $no_of_email = DB::numOfRows('email', 'users', $data['email']);
+        if($no_of_email >= 1)
         {
             return new JsonResponse(["error" => ['email' => 'Your email has already been used']], 400);
         }

@@ -71,20 +71,14 @@ class DB
         return $queryParams;
     }
 
-    public static function isUnique($field, $table, $fieldValue)
+    public static function numOfRows($field, $table, $fieldValue)
     {
         $statement = self::$con->prepare("SELECT COUNT(*) FROM `{$table}` WHERE {$field}=:{$field} ");        
         $statement->bindValue(":{$field}", $fieldValue);
         $statement->execute();
         $field_count = $statement->fetchColumn();
 
-        if($field_count <= 0)
-        {
-            return true;
-        }else
-        {
-            return false;
-        }
+        return $field_count;
     }
 
 }
