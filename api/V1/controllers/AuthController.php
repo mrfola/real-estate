@@ -23,6 +23,14 @@ class AuthController
 
     }
 
+    /**
+     * Get Json Web Token from JWT servers
+     *  
+     * @param array $data
+     * @return object 
+     * 
+     */
+
     public function getToken(array $data)
     {
         $iat = time();
@@ -44,6 +52,14 @@ class AuthController
         return new JsonResponse(["token" => $jwt, "expires" => $exp]);
     }
 
+
+     /**
+     * Validates Json Web Token to ensure it has not been tampered with.
+     *  
+     * @param array $data
+     * @return boolean 
+     * 
+     */
 
     public function validateRequest($request)
     {
@@ -71,16 +87,39 @@ class AuthController
        
     }
 
+    /**
+     * Sets user id of logged in users
+     *  
+     * @param int $id
+     * 
+     */
+
     public function setUserId($user)
     {
         self::$user= $user;
     }
 
+    /**
+     * Gets user id of logged in users
+     *  
+     * @return int 
+     * 
+     */
     public static function getUserId()
     {
         return self::$user;
     }
 
+    /**
+     * Logs in current user
+     *  
+     * Get's user request and compares it with database records. If record doesn't match it rejects request. 
+     * If it matches, it generates token for user.
+     * 
+     * @param array $request
+     * @return object 
+     * 
+     */
     public function login(ServerRequest $request)
     {
         $data = $request->getParsedBody();
@@ -135,6 +174,13 @@ class AuthController
         }
     }
 
+    /**
+     * Logs out user
+     *  
+     * @param array $data
+     * @return object 
+     * 
+     */
     public function logout(ServerRequest $request)
     {
         if ($this->validateRequest($request))

@@ -10,6 +10,17 @@ use Core\DB;
 
 class PaymentController
 {
+
+    /**
+     * Payment Link for listings.
+     *
+     * The function gets the listing information and sends a post request to flutterwave with the listing information as meta alongside other important information (e.g price, currency, etc)
+     * If the request goes through, flutterwave responds with a payment link for the user to use.
+     * 
+     * @param int $listing_id
+     * @return object 
+     */
+
     public function pay($listing_id)
     {
         $listing = new Listing();
@@ -47,11 +58,12 @@ class PaymentController
             ]
         ];
 
+
+        //Sends a post request to flutterwave API in order to get payment link for users
         $url = "https://api.flutterwave.com/v3/payments";
 
         //creat curl session
         $curl = curl_init($url);
-        //curl_setopt($curl, CURLOPT_URL, 'https://www.edureka.co');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER , true);
         curl_setopt($curl, CURLOPT_POST, "post");
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
@@ -75,6 +87,16 @@ class PaymentController
             return $response. PHP_EOL;
         }
     }
+
+    /**
+     * Redirect link for flutterwave.
+     *
+     * After someone attempts to pay, paystack redirects them to this link alongside sending some data in the url. 
+     * The function then sends a post request to flutterwave to confirm the transaction status, saves record to the databse and gives appropriate response to users. 
+     * 
+     * @param array $request
+     * @return object 
+     */
 
     public function pay_redirect(ServerRequest $request)
     {

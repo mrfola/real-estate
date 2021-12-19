@@ -7,8 +7,21 @@ use Laminas\Diactoros\Response\JsonResponse;
 class DB
 {
     static $con;
-    //in later modifications, call the variables from .env file
-    public static function setConnection($host, $dbname, $user, $password)
+
+
+    /**
+     * Creates Database connection.
+     * 
+     * @param string $host
+     * @param string $dbname
+     * @param string $user
+     * @param string $password
+     * 
+     * @return object
+     * 
+     */
+
+     public static function setConnection($host, $dbname, $user, $password)
     {
         $dsn = "mysql:host={$host};"."dbname={$dbname}";
 
@@ -25,10 +38,32 @@ class DB
     
     }   
 
+    
+    /**
+     * Get connection object
+     * 
+     * @return object
+     * 
+     */
+
+
     public static function getConnection()
     {
         return self::$con;
     }
+
+    
+    /**
+     * Creates PHP PDO "Bind Param Statement" for all fields in an SQL statement.
+     * 
+     * @param string $statement
+     * @param array $data
+     * @param array $allowedFields
+     * 
+     * @return object
+     * 
+     */
+
 
     public static function bindAllParams($statement, $data, $allowedFields)
     {
@@ -48,6 +83,16 @@ class DB
 
         return $statement;
     }
+
+    /**
+     * Genereate SQL query parameters for all fields in an SQL statement (e.g  "book=:book, ISBN=:ISBN ...").
+     * 
+     * @param array $data
+     * @param array $allowedFields
+     * 
+     * @return object
+     * 
+     */
 
     public static function getQueryParams($data, $allowedFields)
     {
@@ -71,6 +116,15 @@ class DB
         return $queryParams;
     }
 
+    /**
+     * Finds the number of rows that exists in database table where a field equals a certain value.
+     * 
+     * @param string $table
+     * @param string $field
+     * @param string $fieldValue
+     * @return object
+     * 
+     */
     public static function numOfRows($field, $table, $fieldValue)
     {
         $statement = self::$con->prepare("SELECT COUNT(*) FROM `{$table}` WHERE {$field}=:{$field} ");        

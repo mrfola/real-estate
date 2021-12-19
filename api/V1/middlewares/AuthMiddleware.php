@@ -16,6 +16,7 @@ class AuthMiddleware
     {
         $this->auth = new AuthController();
 
+        //ensures user is logged in
         if ($this->auth->validateRequest($request))
         {     
             $user_id = $this->auth->validateRequest($request)->data->id;

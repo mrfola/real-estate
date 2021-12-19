@@ -10,6 +10,14 @@ Class Listing
 {
    protected $allowedFields = ["owner_id", "name", "description", "currency", "price", "images", "details", "location"];
 
+    
+    /**
+     * Get All Listings.
+     * 
+     * @return object 
+     * 
+     */
+
     public function getAllListings()
     {
         //IMPROVEMENTS: 
@@ -18,6 +26,15 @@ Class Listing
         $statement->execute();
         return new JsonResponse($statement->fetchAll(PDO::FETCH_ASSOC), 200);
     }
+
+    
+    /**
+     * Get Single Listing.
+     * 
+     * @param array $id
+     * @return object 
+     * 
+     */
 
     public function getListing($id)
     {
@@ -33,9 +50,17 @@ Class Listing
         return new JsonResponse($statement->fetch(PDO::FETCH_ASSOC), 200);
     }
 
+    
+    /**
+     * Create Listing.
+     * 
+     * @param array $data
+     * @return object 
+     * 
+     */
+
     public function createListing($data)
     {
-
         try 
         {
             $statement = DB::$con->prepare("INSERT INTO `listings` (`owner_id`, `name`, `description`, `images`, `details`, `location`) 
@@ -53,9 +78,16 @@ Class Listing
             return json_encode(["error" => $e]);
         }
         
-
-        
     }
+
+    /**
+     * Update Listing.
+     * 
+     * @param array $data
+     * @param int $id
+     * @return object 
+     * 
+     */
 
     public function updateListing($data, $id)
     {
@@ -97,6 +129,14 @@ Class Listing
  
          return $this->getListing($id);
     }
+
+    /**
+     * Delete Listing.
+     * 
+     * @param int $id
+     * @return object 
+     * 
+     */
 
     public function deleteListing($id)
     {

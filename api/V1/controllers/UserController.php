@@ -9,12 +9,27 @@ use API\V1\Models\User;
 
 class UserController
 {
+    /**
+     * Get Single User.
+     * 
+     * @param int $id
+     * @return object 
+     * 
+     */
+
     public function show($id)
     {
         $user = new User();
         return $user->getUser($id);
     }
 
+     /**
+     * Create User.
+     * 
+     * @param array $request
+     * @return object 
+     * 
+     */
     public function create(ServerRequest $request)
     {
         $data = $request->getParsedBody(); //get array data from request

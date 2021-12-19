@@ -11,12 +11,27 @@ use Cloudinary\Api\Upload\UploadApi;
 
 class ListingController
 { 
-    
+    /**
+     * Gets all Listings.
+     * 
+     * @param array $request
+     * @return object 
+     * 
+     */
+
     public function index(ServerRequest $request)
     {
         $listing = new Listing();
         return $listing->getAllListings();      
     }
+
+    /**
+     * Gets single Listing.
+     * 
+     * @param int $id
+     * @return object 
+     * 
+     */
 
     public function show($id)
     {
@@ -24,9 +39,22 @@ class ListingController
         return $listing->getListing($id);
     }
 
+
+    /**
+     * Create Listing.
+     * 
+     * This method gets data from the request, extracts the listing image links and converts it into an array. 
+     * It then stores these images to cloudinary storage, after which it gets a new url and then updates the request to replace the old image urls with the new image urls
+     * It then saves this new data to the databse
+     * 
+     * @param array $request
+     * @return object 
+     * 
+     */
+
     public function create(ServerRequest $request)
     {
-        $data = $request->getParsedBody();         //get request content
+        $data = $request->getParsedBody();//get request content
         $data["owner_id"] = AuthController::getUserId();
 
         //validate
@@ -55,6 +83,14 @@ class ListingController
         }
     }
 
+
+    /**
+     * Update Listing.
+     * 
+     * @param array $request
+     * @return object 
+     * 
+     */
     public function update(ServerRequest $request, $id)
     {
         $data =  $request->getQueryParams();//get request data
@@ -63,6 +99,14 @@ class ListingController
         return $listing->updateListing($data, $id);
       
     }
+
+    /**
+     * Delete Listing
+     * 
+     * @param array $request
+     * @return object 
+     * 
+     */
 
     public function destroy($id)
     {

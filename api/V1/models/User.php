@@ -8,6 +8,13 @@ class User
 {
     protected $allowedFields = ["name", "email", "password", "phonenumber", "account_number", "bank"];
 
+    /**
+     * Stores new user to DB
+     *  
+     * @param array $data
+     * @return object 
+     * 
+     */
     public function createUser($data)
     {
         //IMPROVEMENTS: add salt to password
@@ -30,9 +37,16 @@ class User
         return $this->getUser(DB::$con->lastInsertId());
     }
 
+    /**
+     * Gets single user from database
+     *  
+     * @param int $id
+     * @return object 
+     * 
+     */
     public function getUser($id)
     {
-        $statement = DB::$con->prepare("SELECT * FROM `users` WHERE id=:id");//$id
+        $statement = DB::$con->prepare("SELECT * FROM `users` WHERE id=:id");
         $statement->bindParam(":id", $id);
         $statement->execute();
         return new JsonResponse($statement->fetch(PDO::FETCH_ASSOC), 200);

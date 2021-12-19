@@ -7,6 +7,15 @@ class Transaction
 {
     protected $allowedFields = ["user_id", "email", "listing_id", "status", "amount", "currency", "transaction_id", "first_six_digits", "last_four_digits", "created_at"];
    
+    
+    /**
+     * Stores Transaction Record in database
+     * 
+     * @param array $data
+     * @return object 
+     * 
+     */
+
     public function createTransaction($data)
     {   
         $user_id = $data->data->meta->occupant_id;
