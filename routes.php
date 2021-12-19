@@ -23,7 +23,7 @@ $router->get('/users/{id}', [UserController::class, 'show']);
 $router->patch('/users/{id}', [UserController::class, 'update']);
 $router->delete('/users/{id}', [UserController::class, 'destroy']);
 
-$router->post('/pay/listing/{id}', [PaymentController::class, 'pay']);
+$router->post('/pay/listing/{listing_id}', [PaymentController::class, 'pay']);
 
 $router->get('/logout', [AuthController::class, 'logout']);
 });

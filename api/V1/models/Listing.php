@@ -8,7 +8,7 @@ use API\V1\Controllers\AuthController;
 
 Class Listing
 {
-   protected $allowedFields = ["user_id", "name", "description", "currency", "price", "images", "details", "location"];
+   protected $allowedFields = ["owner_id", "name", "description", "currency", "price", "images", "details", "location"];
 
     public function getAllListings()
     {
@@ -38,8 +38,8 @@ Class Listing
 
         try 
         {
-            $statement = DB::$con->prepare("INSERT INTO `listings` (`user_id`, `name`, `description`, `images`, `details`, `location`) 
-            VALUES (:user_id, :name, :description, :images, :details, :location)"); 
+            $statement = DB::$con->prepare("INSERT INTO `listings` (`owner_id`, `name`, `description`, `images`, `details`, `location`) 
+            VALUES (:owner_id, :name, :description, :images, :details, :location)"); 
 
             DB::bindAllParams($statement, $data, $this->allowedFields);
 
@@ -74,16 +74,16 @@ Class Listing
  
          //only owner of listing can update
          $listing = $this->getListing($id);         
-         $user_id = json_decode($listing->getBody()->getContents())->user_id;
-         if($user_id != AuthController::getUserId())
+         $owner_id = json_decode($listing->getBody()->getContents())->owner_id;
+         if($owner_id != AuthController::getUserId())
          {
              return new JsonResponse(["error" => "You are not authorized to carry out this operation"], 401);
          }
 
-        //remove "user_id" from request if present - you are not permitted to change the owner of a listing
-         if(in_array("user_id", $data))
+        //remove "owner_id" from request if present - you are not permitted to change the owner of a listing
+         if(in_array("owner_id", $data))
          {
-             unset($data["user_id"]);
+             unset($data["owner_id"]);
          }
  
          //get query parameter
@@ -109,8 +109,8 @@ Class Listing
  
          //only owner of listing can update
          $listing = $this->getListing($id);         
-         $user_id = json_decode($listing->getBody()->getContents())->user_id;
-         if($user_id != AuthController::getUserId())
+         $owner_id = json_decode($listing->getBody()->getContents())->owner_id;
+         if($owner_id != AuthController::getUserId())
          {
              return new JsonResponse(["error" => "You are not authorized to carry out this operation"], 401);
          }

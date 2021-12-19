@@ -27,11 +27,11 @@ class ListingController
     public function create(ServerRequest $request)
     {
         $data = $request->getParsedBody();         //get request content
-        $data["user_id"] = AuthController::getUserId();
+        $data["owner_id"] = AuthController::getUserId();
 
         //validate
         $validator = new Validator($data);
-        $validator->rule('required',  ["user_id", "name", "description", "images", "details", "location"]);
+        $validator->rule('required',  ["owner_id", "name", "description", "images", "details", "location"]);
         
         if($validator->validate())
         {

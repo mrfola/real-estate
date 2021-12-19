@@ -2,16 +2,19 @@
 namespace API\V1\Controllers;
 use API\V1\Models\Listing;
 use API\V1\Models\User;
+use API\V1\Models\Transaction;
 use Laminas\Diactoros\ServerRequest;
-
+use API\V1\Controllers\AuthController;
+use Laminas\Diactoros\Response\JsonResponse;
+use Core\DB;
 
 class PaymentController
 {
-    public function pay($id)
+    public function pay($listing_id)
     {
         $listing = new Listing();
-        $listing = json_decode($listing->getListing($id)->getBody()->getContents());
-        $user_id = $listing->user_id;
+        $listing = json_decode($listing->getListing($listing_id)->getBody()->getContents());//get Listing Information
+        $user_id = AuthController::getUserId(); //logged in user id
         if(!(is_null($listing->currency)) && !(empty($listing->currency))) 
         {
             $currency = $listing->currency;
@@ -21,7 +24,7 @@ class PaymentController
         }
 
         $user = new User();
-        $user =  json_decode($user->getUser($user_id)->getBody()->getContents());
+        $user =  json_decode($user->getUser($user_id)->getBody()->getContents());//get Logged in user information
 
         $transaction_ref = md5(rand());//create random transaction reference
         $data = [
@@ -31,7 +34,8 @@ class PaymentController
             "redirect_url" => "http://localhost:8000/pay_redirect",
             "payment_options" => "card",
             "meta" => [
-               "consumer_id" => $user_id,
+               "occupant_id" => $user_id,
+               "listing_id" => $listing_id
             ],
             "customer" => [
                "email" => $user->email,
@@ -96,16 +100,32 @@ class PaymentController
         $response = curl_exec($curl);
 
         curl_close($curl);
-        echo $response;
-
-        if($response["status"] == "success")
+    //   return $response;
+        if(json_decode($response)->status == "success")
         {
-            //UPDATE:
-            //save transaction details to database;
+            $user_id = json_decode($response)->data->meta->occupant_id;
 
-            return new JsonResponse(["message" => "Payment Successful"], 200);
+            //save transaction details to database;
+            $transaction = new Transaction();
+            $transaction->createTransaction(json_decode($response));
+            
+            $data = ["occupant_id" => $user_id, "is_available" => 0];
+           
+            //update listing 
+            $statement = DB::$con->prepare("UPDATE `listings` SET `occupant_id`=$user_id,`is_available`=0 WHERE id=:id");
+            $statement->bindParam(":id", json_decode($response)->data->meta->listing_id);
+            
+            if($statement->execute())
+            {
+                return new JsonResponse(["message" => "Payment Successful"], 200);  
+            }
+            
         }else
         {
+             //save transaction details to database;
+             $transaction = new Transaction();
+             $transaction->createTransaction(json_decode($response));
+
             return new JsonResponse(["error" => "Something went wrong. Please try again."], 500);
         }
     }

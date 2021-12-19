@@ -6,7 +6,7 @@ use Laminas\Diactoros\Response\JsonResponse;
 
 class User
 {
-    protected $allowedFields = ["name", "email", "password", "phonenumber"];
+    protected $allowedFields = ["name", "email", "password", "phonenumber", "account_number", "bank"];
 
     public function createUser($data)
     {
