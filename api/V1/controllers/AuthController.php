@@ -170,7 +170,7 @@ class AuthController
             }
         }else
         {
-            return new JsonResponse(["errors" => $validator->errors()], 504);
+            return new JsonResponse(["errors" => $validator->errors()], 400);
         }
     }
 

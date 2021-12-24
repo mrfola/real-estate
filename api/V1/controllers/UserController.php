@@ -5,6 +5,7 @@ use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Response\JsonResponse;
 use Valitron\Validator;
 use Exception;
+use API\V1\Exceptions\UsedEmailException;
 use API\V1\Models\User;
 
 class UserController
@@ -36,18 +37,26 @@ class UserController
 
         //Validate
         $validate = new Validator($data);
-        $validate->rule('required', ['name', 'email', 'password']);
+        $validate->rule('required', ['name', 'email', 'password', 'phonenumber']);
         $validate->rule('email', 'email');
 
         if ($validate->validate())
-        {   
-            $user = new User();
-            return $user->createUser($data);
+        {  
+            try
+            {
+                $user = new User();
+                return $user->createUser($data);
+                
+            } catch (UsedEmailException $error) 
+            {
+                return new JsonResponse(["errors" => $error->getMessage()], 400);  
+            }
+            
 
         }
         else
         {   
-          return new JsonResponse(["errors" => $validate->errors()]);  
+          return new JsonResponse(["errors" => $validate->errors()], 400);  
         }
     }
 }

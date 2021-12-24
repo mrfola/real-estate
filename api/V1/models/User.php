@@ -3,6 +3,7 @@ namespace API\V1\Models;
 use Core\DB;
 use PDO;
 use Laminas\Diactoros\Response\JsonResponse;
+use API\V1\Exceptions\UsedEmailException;
 
 class User
 {
@@ -23,7 +24,7 @@ class User
         $no_of_email = DB::numOfRows('email', 'users', $data['email']);
         if($no_of_email >= 1)
         {
-            return new JsonResponse(["error" => ['email' => 'Your email has already been used']], 400);
+            throw new UsedEmailException("Your email has been used");
         }
 
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
