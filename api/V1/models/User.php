@@ -49,6 +49,8 @@ class User
         $statement = DB::$con->prepare("SELECT * FROM `users` WHERE id=:id");
         $statement->bindParam(":id", $id);
         $statement->execute();
-        return new JsonResponse($statement->fetch(PDO::FETCH_ASSOC), 200);
+        $user = $statement->fetch(PDO::FETCH_ASSOC);
+        unset($user["password"]);//remove password field
+        return new JsonResponse($user, 200);
     }
 }
