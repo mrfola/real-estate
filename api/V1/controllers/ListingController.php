@@ -9,6 +9,9 @@ use API\V1\Controllers\AuthController;
 use API\V1\Models\Listing;
 use Cloudinary\Api\Upload\UploadApi;
 use Exception;
+use API\V1\Exceptions\EmptyQueryException;
+use API\V1\Exceptions\NotFoundException;
+use API\V1\Exceptions\UnauthorizedUserException;
 
 class ListingController
 { 
@@ -111,9 +114,28 @@ class ListingController
     public function update(ServerRequest $request, $id)
     {
         $data =  $request->getQueryParams();//get request data
+        $data["id"] = $id;
         
         $listing = new Listing();
-        return $listing->updateListing($data, $id);
+        try
+        {
+        $updated_listing = $listing->updateListing($data);
+        }catch (EmptyQueryException $error)
+        {
+            return new JsonResponse(["errors" => $error->getMessage()], 400);  
+
+        }
+        catch (NotFoundException $error)
+        {
+            return new JsonResponse(["errors" => $error->getMessage()], 404);  
+
+        }catch (UnauthorizedUserException $error)
+        {
+            return new JsonResponse(["errors" => $error->getMessage()], 401);  
+
+        }
+
+        return $updated_listing;
       
     }
 

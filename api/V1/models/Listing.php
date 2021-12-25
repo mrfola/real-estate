@@ -5,6 +5,10 @@ use Core\DB;
 use PDO;
 use Laminas\Diactoros\Response\JsonResponse;
 use API\V1\Controllers\AuthController;
+use API\V1\Exceptions\EmptyQueryException;
+use API\V1\Exceptions\NotFoundException;
+use API\V1\Exceptions\UnauthorizedUserException;
+
 
 Class Listing
 {
@@ -89,38 +93,42 @@ Class Listing
      * 
      */
 
-    public function updateListing($data, $id)
+    public function updateListing($data)
     {
+        $id = $data["id"];
+        unset($data["id"]);
+
          //reject empty request
          if (is_null($data) || empty($data))
          {
-             return new JsonResponse(["error" => "No value to update"], 401);
+            throw new EmptyQueryException("No value to update");
          }
  
          //Check if listing exists
          $num_of_listings = DB::numOfRows('id', 'listings', $id);
          if($num_of_listings <= 0)
          {
-             return new JsonResponse(["error" => "Listing does not exist"], 404);
+            throw new NotFoundException("Listing Not Found");
          }
  
          //only owner of listing can update
-         $listing = $this->getListing($id);         
+         $listing = $this->getListing($id);                  
          $owner_id = json_decode($listing->getBody()->getContents())->owner_id;
+
          if($owner_id != AuthController::getUserId())
-         {
-             return new JsonResponse(["error" => "You are not authorized to carry out this operation"], 401);
+         { 
+            throw new UnauthorizedUserException("You are not authorized to carry out this operation");
          }
 
         //remove "owner_id" from request if present - you are not permitted to change the owner of a listing
          if(in_array("owner_id", $data))
          {
-             unset($data["owner_id"]);
+            unset($data["owner_id"]);
          }
  
          //get query parameter
          $queryParams = DB::getQueryParams($data, $this->allowedFields);
- 
+
          $statement = DB::$con->prepare("UPDATE `listings` SET $queryParams WHERE id=:id");
          DB::bindAllParams($statement, $data, $this->allowedFields);
          $statement->bindParam(":id", $id);

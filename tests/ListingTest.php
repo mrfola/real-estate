@@ -185,13 +185,160 @@ class ListingTest extends  TestCase
         $this->assertEquals("400", $listing->getStatusCode());
     }
 
-    //test_that_you_get_json_when_you_get_listing
-    //test_that_you_can_get_listing
-    //test_that_you_need_to_login_to_update_listing
-    //test_that_you_can_update_listing
-    //test_that_you_need_to_login_to_delete_listing
+    public function test_that_you_get_json_when_you_get_listing()
+    {
+        $token = $this->login();
+
+        $data = 
+        [
+         "name" => "New listing",
+         "description" => "It's a really beautiful home",
+         "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png,C:\Users\Mr Fola\Desktop\All\Memes\child-gun.png,C:\Users\Mr Fola\Desktop\All\Memes\baby-meme.jpg",
+         "details" => "It is a 4 story building with 4 windows",
+         "location" => "Ogun, Nigeria"
+        ];
+
+        $listing = $this->client->post("/listings",[
+            "http_errors" => false,
+            "form_params" => $data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+        
+        $this->assertJson($listing->getBody()->getContents());
+    }
+
+    public function test_that_you_need_to_login_to_update_listing()
+    {
+        $token = $this->login();
+
+        $data = 
+        [
+         "name" => "New listing",
+         "description" => "It's a really beautiful home",
+         "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png",
+         "details" => "It is a 4 story building with 4 windows",
+         "location" => "Osun, Nigeria"
+        ];
+
+        //create listing
+        $listing = $this->client->post("/listings",[
+            "http_errors" => false,
+            "form_params" => $data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+
+        //update listing
+        $listing_id = json_decode($listing->getBody()->getContents(), true)["id"];
+        $updated_listing = $this->client->patch("/listings/".$listing_id,["http_errors" => false, "form_params" => $data]);
+
+        $this->assertEquals("401",$updated_listing->getStatusCode());
+    }
+
+    public function test_that_listing_accepts_only_query_data_on_update()
+    {
+        $token = $this->login();
+
+        //create listing
+        $data = 
+        [
+         "name" => "New listing",
+         "description" => "It's a really beautiful home",
+         "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png,C:\Users\Mr Fola\Desktop\All\Memes\child-gun.png,C:\Users\Mr Fola\Desktop\All\Memes\baby-meme.jpg",
+         "details" => "It is a 4 story building with 4 windows",
+         "location" => "Ogun, Nigeria"
+        ];
+
+        $listing = $this->client->post("/listings",[
+            "form_params" => $data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+        
+        //update listing
+        $updated_data = 
+        [
+            "name" => "Updated Listing", 
+            "description" => "Updated description"
+        ];
+
+        $listing_id = json_decode($listing->getBody()->getContents(), true)["id"];
+        
+        $updated_listing = $this->client->patch("/listings/".$listing_id, [
+            "http_errors" => false,
+            "form_params" => $updated_data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+
+        $updated_listing_array = json_decode($updated_listing->getBody()->getContents(), true);
+
+        $this->assertEquals("400", $updated_listing->getStatusCode());
+
+    }
+
+    public function test_that_listing_returns_correct_data_on_update()
+    {
+        $token = $this->login();
+
+        //create listing
+        $data = 
+        [
+         "name" => "New listing",
+         "description" => "It's a really beautiful home",
+         "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png,C:\Users\Mr Fola\Desktop\All\Memes\child-gun.png,C:\Users\Mr Fola\Desktop\All\Memes\baby-meme.jpg",
+         "details" => "It is a 4 story building with 4 windows",
+         "location" => "Ogun, Nigeria"
+        ];
+
+        $listing = $this->client->post("/listings",[
+            "form_params" => $data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+        
+        //update listing
+        $updated_data = 
+        [
+            "name" => "Updated Listing", 
+            "description" => "Updated description"
+        ];
+
+        $listing_id = json_decode($listing->getBody()->getContents(), true)["id"];
+        
+        $update_listing_url = "/listings/".$listing_id."?name=".$updated_data["name"]."&description=".$updated_data["description"];
+        $updated_listing = $this->client->patch($update_listing_url, [
+            "form_params" => $updated_data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+
+        $updated_listing_array = json_decode($updated_listing->getBody()->getContents(), true);
+
+        $this->assertTrue(array_key_exists("id", $updated_listing_array));
+        $this->assertTrue(array_key_exists("name", $updated_listing_array));
+        $this->assertTrue(array_key_exists("images", $updated_listing_array));
+        $this->assertTrue(array_key_exists("details", $updated_listing_array));
+        $this->assertTrue(array_key_exists("location", $updated_listing_array));
+
+
+        $this->assertEquals($updated_data["name"], ($updated_listing_array["name"]));
+        $this->assertEquals($updated_data["description"], ($updated_listing_array["description"]));
+
+        $this->assertEquals("200", $updated_listing->getStatusCode());
+
+    }
+
+    public function test_that_you_can_only_update_your_own_listing()
+    {
+
+    }
+
+    // public function test_that_you_need_to_delete_to_create_listing()
+    // {
+    //     $data = 
+    //     [
+    //      "name" => "New listing",
+    //      "description" => "It's a really beautiful home",
+    //      "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png,C:\Users\Mr Fola\Desktop\All\Memes\child-gun.png,C:\Users\Mr Fola\Desktop\All\Memes\baby-meme.jpg",
+    //      "details" => "It is a 4 story building with 4 windows",
+    //      "location" => "Osun, Nigeria"
+    //     ];
+
+    //     $listing = $this->client->post("/listings", ["http_errors" => false, "form_params" => $data]);
+    //     $this->assertEquals("401", $listing->getStatusCode());
+    // }
+    //test that 
     //test_that_you_can_delete_listing
-    //test_that_you_can_only_update_your_own_user
-    //test_that_you_can_only_delete_your_own_user
+    //test_that_you_can_only_delete_your_own_listing
 
 }
