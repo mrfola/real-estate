@@ -8,6 +8,7 @@ use Valitron\Validator;
 use API\V1\Controllers\AuthController;
 use API\V1\Models\Listing;
 use Cloudinary\Api\Upload\UploadApi;
+use Exception;
 
 class ListingController
 { 
@@ -68,7 +69,23 @@ class ListingController
             $uploaded_images = [];
             foreach ($images as $image_url)
             {
-                $uploaded_image = (new UploadApi())->upload("{$image_url}");
+                try
+                {
+                    $uploaded_image = (new UploadApi())->upload("{$image_url}");
+                }
+                catch (Exception $error)
+                {
+                    //check if error message is due to bad url
+                    if (substr($error->getMessage(), 0, 5) == "fopen")
+                    {
+                        return new JsonResponse(["errors" => "Could not open images. Please try again"], 400);
+
+                    }else
+                    {
+                        return new JsonResponse(["errors" => "Something went wrong. Please try again"], 500);
+                    }
+                }
+
                 $uploaded_images[] = $uploaded_image["url"];
             }
 
@@ -108,6 +125,7 @@ class ListingController
      * 
      */
 
+     //ensure images delete from cloudinary on delete
     public function destroy($id)
     {
        $listing = new Listing();
