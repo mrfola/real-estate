@@ -17,9 +17,12 @@ class ListingTest extends  TestCase
     {
         $this->client = "";
 
-        $statement = DB::$con->prepare("TRUNCATE TABLE `Listings`");
-        $statement = DB::$con->prepare("TRUNCATE TABLE `Users`");
+        $statement = DB::$con->prepare("TRUNCATE TABLE `listings`");
         $statement->execute();
+
+        $statement = DB::$con->prepare("TRUNCATE TABLE `users`");
+        $statement->execute();
+
     }
 
     public function create_user(array $data)
@@ -56,7 +59,7 @@ class ListingTest extends  TestCase
          "description" => "It's a really beautiful home",
          "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png,C:\Users\Mr Fola\Desktop\All\Memes\child-gun.png,C:\Users\Mr Fola\Desktop\All\Memes\baby-meme.jpg",
          "details" => "It is a 4 story building with 4 windows",
-         "location" => "Lagos, Nigeria"
+         "location" => "Osun, Nigeria"
         ];
 
         $listing = $this->client->post("/listings", ["http_errors" => false, "form_params" => $data]);
@@ -77,18 +80,111 @@ class ListingTest extends  TestCase
         ];
 
         $listing = $this->client->post("/listings",[
-            "http_errors" => true,
+            "http_errors" => false,
             "form_params" => $data,
             'headers' => ["Authorization" => "Bearer ".$token]]);
 
-        var_dump($listing->getBody()->getContents());
-        $this->assertEquals("401", $listing->getStatusCode());
-        
+        $this->assertEquals("400", $listing->getStatusCode());
     } 
-    //test_that_images_upload_to_cloudinary_on_create
-    //test_that_you_can_create_listing
-    //test_that_you_get_an_error_when_creating_listing_with_incomplete_fields
-    //test_that_listing_returns_correct_data_on_create
+
+    public function test_that_images_upload_to_cloudinary_on_create()
+    {
+        $token = $this->login();
+
+        $data = 
+        [
+         "name" => "New listing",
+         "description" => "It's a really beautiful home",
+         "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png,C:\Users\Mr Fola\Desktop\All\Memes\child-gun.png,C:\Users\Mr Fola\Desktop\All\Memes\baby-meme.jpg",
+         "details" => "It is a 4 story building with 4 windows",
+         "location" => "Ogun, Nigeria"
+        ];
+
+        $listing = $this->client->post("/listings",[
+            "http_errors" => false,
+            "form_params" => $data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+        
+        $created_listing = json_decode($listing->getBody()->getContents(), true);
+
+        $listing_images = $created_listing["images"];
+
+        $listing_images_array = [];
+        $listing_images_array =  explode(",", $listing_images);
+
+        $is_cloudinary_url = true;
+        foreach($listing_images_array as $listing_image)
+        {
+            //check if domain on image is from cloudinary
+            if(substr($listing_image, 0, 25) == "http://res.cloudinary.com")
+                {
+                    $is_cloudinary_url = true;
+                }else
+                {
+                    $is_cloudinary_url = false;
+                    break;
+                }
+        }
+
+        $this->assertTrue($is_cloudinary_url);
+
+    }
+
+    public function test_that_listing_returns_correct_data_on_create()
+    {
+        $token = $this->login();
+
+        $data = 
+        [
+         "name" => "New listing",
+         "description" => "It's a really beautiful home",
+         "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png,C:\Users\Mr Fola\Desktop\All\Memes\child-gun.png,C:\Users\Mr Fola\Desktop\All\Memes\baby-meme.jpg",
+         "details" => "It is a 4 story building with 4 windows",
+         "location" => "Ogun, Nigeria"
+        ];
+
+        $listing = $this->client->post("/listings",[
+            "http_errors" => false,
+            "form_params" => $data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+        
+        $created_listing = json_decode($listing->getBody()->getContents(), true);
+
+        $this->assertTrue(array_key_exists("id", $created_listing));
+        $this->assertTrue(array_key_exists("name", $created_listing));
+        $this->assertTrue(array_key_exists("images", $created_listing));
+        $this->assertTrue(array_key_exists("details", $created_listing));
+        $this->assertTrue(array_key_exists("location", $created_listing));
+
+
+        $this->assertEquals($data["name"], ($created_listing["name"]));
+        $this->assertEquals($data["description"], ($created_listing["description"]));
+        $this->assertEquals($data["details"], ($created_listing["details"]));
+        $this->assertEquals($data["location"], ($created_listing["location"]));
+
+        $this->assertEquals("200", $listing->getStatusCode());
+    }      
+
+    public function test_that_you_get_an_error_when_creating_listing_with_incomplete_fields()
+    {
+        $token = $this->login();
+
+        $data = 
+        [
+         "description" => "It's a really beautiful home",
+         "images" => "C:\Users\Mr Fola\Desktop\All\Memes\man jacket.png,C:\Users\Mr Fola\Desktop\All\Memes\child-gun.png,C:\Users\Mr Fola\Desktop\All\Memes\baby-meme.jpg",
+         "details" => "It is a 4 story building with 4 windows",
+         "location" => "Ogun, Nigeria"
+        ];
+
+        $listing = $this->client->post("/listings",[
+            "http_errors" => false,
+            "form_params" => $data,
+            'headers' => ["Authorization" => "Bearer ".$token]]);
+        
+        $this->assertEquals("400", $listing->getStatusCode());
+    }
+
     //test_that_you_get_json_when_you_get_listing
     //test_that_you_can_get_listing
     //test_that_you_need_to_login_to_update_listing
