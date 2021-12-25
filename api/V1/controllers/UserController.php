@@ -49,7 +49,7 @@ class UserController
                 
             } catch (UsedEmailException $error) 
             {
-                return new JsonResponse(["errors" => $error->getMessage()], 400);  
+                return new JsonResponse(["errors" => $error->getMessage()], 405);  
             }
             
 
