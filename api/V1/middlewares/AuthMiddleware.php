@@ -1,5 +1,4 @@
 <?php
-
 namespace API\V1\Middlewares;
 
 use MiladRahimi\PhpRouter\Router;

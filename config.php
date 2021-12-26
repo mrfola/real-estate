@@ -6,8 +6,10 @@ require (__DIR__."/core/DB.php");
 
 
 //load .ENV Package
-$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+if (file_exists(__DIR__ . '/.env')) {
+  $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
+  $dotenv->load();
+}
 
 //Load Database
 if($_ENV['APP_ENV'] == 'local')
