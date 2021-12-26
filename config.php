@@ -6,7 +6,7 @@ require (__DIR__."/core/DB.php");
 
 
 //load .ENV Package
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 //Load Database
