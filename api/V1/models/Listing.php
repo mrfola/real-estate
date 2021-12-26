@@ -152,7 +152,7 @@ Class Listing
          $num_of_listings = DB::numOfRows('id', 'listings', $id);
          if($num_of_listings <= 0)
          {
-             return new JsonResponse(["error" => "Listing does not exist"], 404);
+             throw new NotFoundException("Listing does not exist");
          }
  
          //only owner of listing can update
@@ -160,13 +160,13 @@ Class Listing
          $owner_id = json_decode($listing->getBody()->getContents())->owner_id;
          if($owner_id != AuthController::getUserId())
          {
-             return new JsonResponse(["error" => "You are not authorized to carry out this operation"], 401);
+             throw new UnauthorizedUserException("You are not authorized to carry out this operation");
          }
  
          $statement = DB::$con->prepare("DELETE FROM `listings` WHERE id=:id");
          $statement->bindParam(":id", $id);
          $statement->execute();
  
-         return new JsonResponse(["id" => $id, "message" => "Your post has been deleted"], 200);
+         return new JsonResponse(["id" => $id, "message" => "Your listing has been deleted"], 200);
     }
 }

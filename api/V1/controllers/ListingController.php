@@ -151,7 +151,18 @@ class ListingController
     public function destroy($id)
     {
        $listing = new Listing();
-       return $listing->deleteListing($id);
+       try
+       {
+        return $listing->deleteListing($id);
+
+       }catch (NotFoundException $error)
+       {
+           return new JsonResponse(["errors" => $error->getMessage()], 404);
+
+       }catch (UnauthorizedUserException $error)
+       {
+           return new JsonResponse(["errors" => $error->getMessage()], 401);
+       }
     }
 
 
