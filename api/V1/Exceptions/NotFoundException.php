@@ -1,5 +1,5 @@
 <?php
-namespace ApI\V1\Exceptions;
+namespace Api\V1\Exceptions;
 
 use \Exception;
 

@@ -1,9 +1,9 @@
 <?php
-namespace API\V1\Models;
+namespace Api\V1\Models;
 use Core\DB;
 use PDO;
 use Laminas\Diactoros\Response\JsonResponse;
-use API\V1\Exceptions\UsedEmailException;
+use Api\V1\Exceptions\UsedEmailException;
 
 class User
 {

@@ -1,10 +1,10 @@
 <?php
-namespace API\V1\Middlewares;
+namespace Api\V1\Middlewares;
 
 use MiladRahimi\PhpRouter\Router;
 use Psr\Http\Message\ServerRequestInterface;
 use Laminas\Diactoros\Response\JsonResponse;
-use API\V1\Controllers\AuthController;
+use Api\V1\Controllers\AuthController;
 use Closure;
 
 class AuthMiddleware 

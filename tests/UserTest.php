@@ -2,7 +2,7 @@
 use \PHPUnit\Framework\TestCase;
 use Core\DB;
 use GuzzleHttp\Client;
-use API\V1\Exceptions\UsedEmailException;
+use Api\V1\Exceptions\UsedEmailException;
 
 class UserTest extends TestCase
 {

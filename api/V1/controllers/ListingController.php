@@ -1,17 +1,17 @@
 <?php
-namespace API\V1\Controllers;
+namespace Api\V1\Controllers;
 
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\ServerRequest;
 use Firebase\JWT\JWT;
 use Valitron\Validator;
-use API\V1\Controllers\AuthController;
-use API\V1\Models\Listing;
+use Api\V1\Controllers\AuthController;
+use Api\V1\Models\Listing;
 use Cloudinary\Api\Upload\UploadApi;
 use Exception;
-use API\V1\Exceptions\EmptyQueryException;
-use API\V1\Exceptions\NotFoundException;
-use API\V1\Exceptions\UnauthorizedUserException;
+use Api\V1\Exceptions\EmptyQueryException;
+use Api\V1\Exceptions\NotFoundException;
+use Api\V1\Exceptions\UnauthorizedUserException;
 
 class ListingController
 { 

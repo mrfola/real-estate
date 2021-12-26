@@ -1,10 +1,10 @@
 <?php
 use MiladRahimi\PhpRouter\Router;
-use API\V1\Controllers\ListingController;
-use API\V1\Controllers\UserController;
-use API\V1\Controllers\AuthController;
-use API\V1\Middlewares\AuthMiddleware;
-use API\V1\Controllers\PaymentController;
+use Api\V1\Controllers\ListingController;
+use Api\V1\Controllers\UserController;
+use Api\V1\Controllers\AuthController;
+use Api\V1\Middlewares\AuthMiddleware;
+use Api\V1\Controllers\PaymentController;
 
 $router = Router::create();
 

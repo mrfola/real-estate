@@ -1,6 +1,6 @@
 <?php
 
-namespace API\V1\Controllers;
+namespace Api\V1\Controllers;
 
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Response\JsonResponse;

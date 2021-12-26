@@ -1,12 +1,12 @@
 <?php
-namespace API\V1\Controllers;
+namespace Api\V1\Controllers;
 
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Response\JsonResponse;
 use Valitron\Validator;
 use Exception;
-use API\V1\Exceptions\UsedEmailException;
-use API\V1\Models\User;
+use Api\V1\Exceptions\UsedEmailException;
+use Api\V1\Models\User;
 
 class UserController
 {

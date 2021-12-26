@@ -1,10 +1,10 @@
 <?php
-namespace API\V1\Controllers;
-use API\V1\Models\Listing;
-use API\V1\Models\User;
-use API\V1\Models\Transaction;
+namespace Api\V1\Controllers;
+use Api\V1\Models\Listing;
+use Api\V1\Models\User;
+use Api\V1\Models\Transaction;
 use Laminas\Diactoros\ServerRequest;
-use API\V1\Controllers\AuthController;
+use Api\V1\Controllers\AuthController;
 use Laminas\Diactoros\Response\JsonResponse;
 use Core\DB;
 

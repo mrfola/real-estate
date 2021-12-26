@@ -1,7 +1,7 @@
 <?php
-namespace  API\V1\Models;
-use API\V1\Controllers\AuthController;
-use API\V1\Models\Listing;
+namespace  Api\V1\Models;
+use Api\V1\Controllers\AuthController;
+use Api\V1\Models\Listing;
 use Core\DB;
 class Transaction
 {

@@ -1,13 +1,13 @@
 <?php
-namespace API\V1\Models;
+namespace Api\V1\Models;
 
 use Core\DB;
 use PDO;
 use Laminas\Diactoros\Response\JsonResponse;
-use API\V1\Controllers\AuthController;
-use API\V1\Exceptions\EmptyQueryException;
-use API\V1\Exceptions\NotFoundException;
-use API\V1\Exceptions\UnauthorizedUserException;
+use Api\V1\Controllers\AuthController;
+use Api\V1\Exceptions\EmptyQueryException;
+use Api\V1\Exceptions\NotFoundException;
+use Api\V1\Exceptions\UnauthorizedUserException;
 
 
 Class Listing
