@@ -1,5 +1,5 @@
 <?php
-namespace Api\V1\Middlewares;
+namespace API\V1\Middlewares;
 
 use MiladRahimi\PhpRouter\Router;
 use Psr\Http\Message\ServerRequestInterface;
