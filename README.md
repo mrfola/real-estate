@@ -131,3 +131,7 @@ Please make sure to update tests as appropriate.
 
 ## Questions and Collaborations
 If you have any questions regarding this project (or any other project) you can send me an email at [folaranmijesutofunmi[at]gmail.com](mailto:folaranmijesutofunmi@gmail.com) and I'll respond as soon as I can. 
+
+## Other projects you might love
+* [Book Repository](https://github.com/mrfola/book-repository)
+* [Job Scraper](https://github.com/mrfola/laravelJobScraper)
