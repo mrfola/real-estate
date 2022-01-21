@@ -130,4 +130,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## Questions and Collaborations
-If you have any questions regarding this project (or any other project) you can send me an email at [folaranmijesutofunmi@gmail.com](mailto:folaranmijesutofunmi@gmail.com) and I'll respond as soon as I can. 
+If you have any questions regarding this project (or any other project) you can send me an email at [folaranmijesutofunmi[at]gmail.com](mailto:folaranmijesutofunmi@gmail.com) and I'll respond as soon as I can. 
